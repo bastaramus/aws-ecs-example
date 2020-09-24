@@ -1,0 +1,8 @@
+---
+- name: Configure EC2 instance to use it in AWS ECS
+  hosts: all
+  vars:
+    ecs_cluster_name: example-ecs-cluster
+
+  roles:
+    - ecs-cluster
