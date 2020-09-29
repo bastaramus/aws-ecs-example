@@ -32,3 +32,9 @@ data "aws_ami" "packer-ecs-cluster" {
 }
 
 variable "lc_instance_type" {}
+
+variable "asg_max" {}
+variable "asg_min" {}
+variable "asg_grace" {}
+variable "asg_hct" {}
+variable "asg_cap" {}

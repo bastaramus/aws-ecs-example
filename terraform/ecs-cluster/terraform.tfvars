@@ -9,3 +9,9 @@ vpc_db_subnets      = ["10.10.31.0/24", "10.10.32.0/24"]
 cluster_name = "example-ecs-cluster"
 
 lc_instance_type = "t3.medium"
+
+asg_max             = "2"
+asg_min             = "1"
+asg_grace           = "300"
+asg_hct             = "EC2"
+asg_cap             = "1"
