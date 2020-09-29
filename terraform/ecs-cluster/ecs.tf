@@ -24,7 +24,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   health_check_type         = var.asg_hct
   desired_capacity          = var.asg_cap
   force_delete              = true
-  target_group_arns         = module.alb.target_group_arns
+  #target_group_arns         = module.alb.target_group_arns
 
   vpc_zone_identifier = module.vpc.public_subnets
 
@@ -60,4 +60,73 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
 resource "aws_ecs_cluster" "ecs-cluster" {
   name = var.cluster_name
+}
+
+# ----------- Task definition ------------
+
+resource "aws_ecs_task_definition" "wordpress" {
+  family                = "wordpress"
+  container_definitions = file("task-definitions/wordpress.json")
+}
+
+resource "aws_ecs_task_definition" "nginx" {
+  family                = "nginx"
+  container_definitions = file("task-definitions/nginx.json")
+}
+
+# -------------- Services -------------------
+
+resource "aws_ecs_service" "wordpress" {
+  name            = "wordpress"
+  cluster         = aws_ecs_cluster.ecs-cluster.id
+  task_definition = aws_ecs_task_definition.wordpress.arn
+  desired_count   = 1
+
+#  service_registries {
+#    registry_arn = aws_service_discovery_service.wordpress.arn
+#    container_name = "wordpress"
+#    container_port = "9000"
+#  }
+
+}
+
+resource "aws_ecs_service" "nginx" {
+  name            = "nginx"
+  cluster         = aws_ecs_cluster.ecs-cluster.id
+  task_definition = aws_ecs_task_definition.nginx.arn
+  desired_count   = 1
+  iam_role        = aws_iam_role.svc.arn
+
+  load_balancer {
+    target_group_arn = module.alb.target_group_arns[0]
+    container_name   = "nginx"
+    container_port   = 80
+  }
+
+}
+
+#-------- service discovery (we dont use it) ----------
+resource "aws_service_discovery_private_dns_namespace" "wordpress" {
+  name        = "ecs.local"
+  description = "example"
+  vpc         = module.vpc.vpc_id
+}
+
+resource "aws_service_discovery_service" "wordpress" {
+  name = "wordpress"
+
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.wordpress.id
+
+    dns_records {
+      ttl  = 10
+      type = "SRV"
+    }
+
+    routing_policy = "MULTIVALUE"
+  }
+
+  health_check_custom_config {
+    failure_threshold = 1
+  }
 }

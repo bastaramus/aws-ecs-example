@@ -1,0 +1,33 @@
+[
+    {
+      "name": "wordpress",
+      "image": "913120805019.dkr.ecr.eu-central-1.amazonaws.com/wordpress:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "hostPort" : 9000
+        }
+      ],
+      "environment": [
+        {
+            "name": "WORDPRESS_DB_HOST",
+            "value": "wordpress-db.cncsrodjj3e3.eu-central-1.rds.amazonaws.com"
+        },
+        {
+            "name": "WORDPRESS_DB_USER",
+            "value": "dbuser"
+        },
+        {
+            "name": "WORDPRESS_DB_PASSWORD",
+            "value": "mdFRY7143%uR%Hy"
+        },
+        {
+            "name": "WORDPRESS_DB_NAME",
+            "value": "wordpress"
+        }
+    ],
+    "cpu": 512,
+    "memory": 1024
+    }
+  ]

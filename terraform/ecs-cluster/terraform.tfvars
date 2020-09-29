@@ -15,3 +15,7 @@ asg_min             = "1"
 asg_grace           = "300"
 asg_hct             = "EC2"
 asg_cap             = "1"
+
+db_name             = "wordpress"
+db_username         = "dbuser"
+db_password         = "mdFRY7143%uR%Hy"

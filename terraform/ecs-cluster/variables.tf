@@ -38,3 +38,7 @@ variable "asg_min" {}
 variable "asg_grace" {}
 variable "asg_hct" {}
 variable "asg_cap" {}
+
+variable "db_name" {}
+variable "db_username" {}
+variable "db_password" {}

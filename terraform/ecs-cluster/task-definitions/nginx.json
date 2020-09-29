@@ -1,0 +1,25 @@
+[
+    {
+      "name": "nginx",
+      "image": "913120805019.dkr.ecr.eu-central-1.amazonaws.com/nginx:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort" : 80
+        }
+      ],
+      "environment": [
+        {
+            "name": "PHP_FPM_HOST",
+            "value": "127.0.0.1"
+        },
+        {
+            "name": "PHP_FPM_PORT",
+            "value": "9000"
+        }        
+    ],
+    "cpu": 256,
+    "memory": 512
+    }
+  ]

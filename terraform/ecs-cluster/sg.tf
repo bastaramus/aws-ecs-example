@@ -52,3 +52,21 @@ resource "aws_security_group" "LB_public_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+###
+# RDS security group
+###
+
+resource "aws_security_group" "DB_rds_sg" {
+  name        = "DB_rds_sg"
+  description = "Used for RDS instances"
+  vpc_id      = module.vpc.vpc_id
+
+  #SQL access from "Demo project" security group
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.ecs_ec2.id}"]
+  }
+}

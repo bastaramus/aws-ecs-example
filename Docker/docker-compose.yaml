@@ -1,0 +1,56 @@
+version: '3.7'
+services:
+
+  wordpress-php_fpm:
+    container_name: wordpress-php_fpm
+    image: wordpress:5.5.1-php7.3-fpm-alpine
+    restart: always
+    volumes:
+      - wp-data:/var/www/html
+    depends_on:
+      - wordpress_db
+    environment:
+      WORDPRESS_DB_HOST: 'wordpress_db'
+      WORDPRESS_DB_USER: 'wp_user'
+      WORDPRESS_DB_PASSWORD: 'GFoyeIplHemj'
+      WORDPRESS_DB_NAME: 'wordpress_db'
+
+  wordpress_db:
+    image: mariadb:10.5.4
+    container_name: wordpress_db
+    restart: always
+    volumes:
+      - wp-mysql:/var/lib/wp-mysql
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    environment:
+      MYSQL_DATABASE: 'wordpress_db'
+      MYSQL_USER: 'wp_user'
+      MYSQL_PASSWORD: 'GFoyeIplHemj'
+      MYSQL_ROOT_PASSWORD: 'yDULsCWQUrrw'
+
+  wp_nginx:
+    container_name: wp_nginx
+    build:
+      dockerfile: ./nginx/Dockerfile
+      context: ./
+    volumes:
+      - wp-data:/var/www/html
+    restart: always
+    depends_on:
+      - wordpress-php_fpm
+    ports:
+      - '80:80'
+    expose:
+      - '80'
+    environment:
+      PHP_FPM_HOST: 'wordpress-php_fpm'
+      PHP_FPM_PORT: '9000'
+
+
+# Names our volume
+volumes:
+  wp-mysql:
+  wp-data:
